@@ -154,24 +154,13 @@ Insight:
 Categorical features have weak-to-moderate relation to default.
 
 ## 8. Correlation Analysis
-Strong Positive Correlations
+Repayment status variables (PAY_0–PAY_6) show the strongest positive correlation with default, confirming that past delinquency is the primary risk signal.
 
-BILL_AMT1–BILL_AMT6 (0.9+)
+Credit limit (LIMIT_BAL) is negatively correlated with default, indicating that customers with higher limits are less likely to default.
 
-PAY_AMT1–PAY_AMT6 (moderate)
+Payment amounts (PAY_AMT1–PAY_AMT6) also show negative correlations, suggesting consistent repayment behavior reduces default risk.
 
-PAY_0 strongly correlated with PAY_2–PAY_6
-
-Features Correlated with Default
-
-Strongest: PAY_0, PAY_2, PAY_3
-
-Moderate: PAY_4 to PAY_6
-
-Weak: LIMIT_BAL, bill amounts, repayment amounts
-
-Key Finding:
-Payment delay history (PAY_X) is the strongest predictor of default.
+Billing amounts and age have very weak correlations, implying limited direct predictive power in isolation.
 
 ## 9. Decision Tree Feature Importance
 
