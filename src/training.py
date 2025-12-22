@@ -11,16 +11,13 @@ def feature_importance(X, y):
     return importances.sort_values(ascending=False)
 
 
-def train_logistic_regression(X_train, y_train):
-    model = LogisticRegression(
-        max_iter=1000,
-        class_weight='balanced'
-    )
+def train_LR(X_train, y_train):
+    model = LogisticRegression(max_iter=1000)
     model.fit(X_train, y_train)
     return model
 
 
-def train_random_forest(X_train, y_train):
+def train_RF(X_train, y_train):
     model = RandomForestClassifier(
         n_estimators=300,
         max_depth=10,
@@ -31,7 +28,7 @@ def train_random_forest(X_train, y_train):
     return model
 
 
-def train_xgboost(X_train, y_train):
+def train_XGB(X_train, y_train):
     model = XGBClassifier(
         n_estimators=500,
         max_depth=4,

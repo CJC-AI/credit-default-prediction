@@ -1,29 +1,34 @@
-# Project Overview
+# Credit Default Risk Modeling (End-to-End)
 
-This project focuses on building an end-to-end **credit default risk prediction system** using classical machine learning and gradient boosting techniques. The objective is to predict whether a credit card customer will default on payment, using historical repayment behavior, billing information, and engineered risk indicators.
+This project implements an **end-to-end credit default risk modeling pipeline**, designed to reflect how consumer credit risk models are built, evaluated, and governed in real financial institutions.
 
-The project mirrors **real-world bank-style credit risk modeling**, emphasizing:
+The objective is to **estimate the probability of default (PD)** for credit card customers using historical repayment behavior, billing patterns, and engineered behavioral risk indicators.
 
-* Robust exploratory data analysis (EDA)
-* Business-driven feature engineering
-* Strong baseline modeling
-* Advanced tree-based models (Random Forest, XGBoost)
-* Threshold optimization, explainability (SHAP), and governance
+The project prioritizes **decision-quality modeling**, not just metric optimization, with emphasis on:
+
+- Exploratory data analysis grounded in risk intuition  
+- Bank-style feature engineering from raw transactional signals  
+- Strong, interpretable baselines  
+- Non-linear tree-based models for lift and recall  
+- Threshold tuning aligned with risk appetite  
+- Model explainability and governance considerations  
 
 ---
 
 # Dataset Description
 
-The dataset contains **30,000 customers** and **25+ features**, including:
+The dataset consists of **30,000 credit card customers** with **25+ features** spanning demographic, behavioral, and financial dimensions.
 
-* **Demographics**: SEX, EDUCATION, MARRIAGE, AGE
-* **Credit Profile**: LIMIT_BAL
-* **Repayment Status**: PAY_0 to PAY_6
-* **Billing History**: BILL_AMT1 to BILL_AMT6
-* **Payment History**: PAY_AMT1 to PAY_AMT6
-* **Target Variable**: `default` (1 = default, 0 = non-default)
+**Feature groups include:**
 
-The dataset is **moderately imbalanced (~22% default rate)**, reflecting realistic consumer credit portfolios.
+- **Demographics**: SEX, EDUCATION, MARRIAGE, AGE  
+- **Credit Exposure**: LIMIT_BAL  
+- **Repayment Status**: PAY_0 to PAY_6 (delinquency indicators)  
+- **Billing History**: BILL_AMT1 to BILL_AMT6  
+- **Payment History**: PAY_AMT1 to PAY_AMT6  
+- **Target**: `default` (1 = default, 0 = non-default)
+
+The target distribution is **moderately imbalanced (~22% default rate)**, consistent with real-world consumer credit portfolios and requiring recall-aware evaluation.
 
 ---
 
@@ -33,15 +38,16 @@ The dataset is **moderately imbalanced (~22% default rate)**, reflecting realist
 credit-default-risk/
 │
 ├── notebooks/                
-│   ├── 01_eda.ipynb
-│   ├── 02_feature_engineering.ipynb
-│   └── 03_modeling.ipynb
+│   ├── 01_eda.ipynb                    # Risk-focused EDA
+│   ├── 02_feature_engineering.ipynb    # Behavioral feature creation
+│   └── 03_modeling.ipynb               # Training, tuning, evaluation
 │
 ├── src/                       
 │   ├── data_loading.py
 │   ├── preprocessing.py
 │   ├── training.py
-│   └── eval.py
+│   ├── eval.py
+|   └── utils.py                        # plots
 │
 ├── requirements.txt
 ├── .gitignore

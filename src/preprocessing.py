@@ -64,7 +64,7 @@ def utili_stab_feat(df: pd.DataFrame):
 
     #STABILITY & VOLATILITY FEATURES
     # Bill Volatility 
-    df['bill_vol'] = df[bill_cols].std(axis=1)
+    df['bill_vol'] = df[bill_cols].std(axis=1) 
     # Utilization Volatility
     df['uti_vol'] = df[bill_cols].div(df['LIMIT_BAL'], axis=0).std(axis=1)
 
@@ -112,13 +112,4 @@ def encode_features(df: pd.DataFrame, target: str):
     X = pd.get_dummies(X, drop_first=True)
     return X, y
 
-
-def scale_features(X_train, X_test):
-    """
-    Scale features for linear models.
-    """
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-
-    return X_train_scaled, X_test_scaled, scaler
+ 
