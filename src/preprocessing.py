@@ -34,7 +34,7 @@ def clean_categorical_features(df: pd.DataFrame):
     return df
 
 
-def behave_feat(df: pd.DataFrame):
+def feature_engineering(df: pd.DataFrame):
     """
     Bank-style feature engineering.
     """
@@ -50,10 +50,6 @@ def behave_feat(df: pd.DataFrame):
     # Delinquency Trend
     df['delinq_trend'] = df['PAY_0'] - df['PAY_6']
 
-    return df
-
-def utili_stab_feat(df: pd.DataFrame):
-
     # UTILIZATION & EXPOSURE FEATURES
     bill_cols = [f'BILL_AMT{i}' for i in range(1,7)]
     # Credit Utilization Ratio
@@ -68,11 +64,6 @@ def utili_stab_feat(df: pd.DataFrame):
     # Utilization Volatility
     df['uti_vol'] = df[bill_cols].div(df['LIMIT_BAL'], axis=0).std(axis=1)
 
-    return df
-
-
-def paycap_liq_feat(df: pd.DataFrame):
-
     # PAYMENT CAPACITY & LIQUIDITY FEATURES
     pay_amt_cols = [f'PAY_AMT{i}' for i in range(1,7)]
     # Payment status Ratio
@@ -85,15 +76,7 @@ def paycap_liq_feat(df: pd.DataFrame):
     imputer = SimpleImputer(strategy='median')
     df[['payment_ratio']] = imputer.fit_transform(df[['payment_ratio']])
 
-    return df
-
-
-def feature_reduction(df: pd.DataFrame):
-    """
-    Correlation pruning
-    """
-    df = df.copy()
-
+    # Correlation pruning
     df = df.drop([
     'BILL_AMT1','BILL_AMT2','BILL_AMT3',
     'PAY_2','PAY_3','PAY_4','PAY_5','PAY_6'
