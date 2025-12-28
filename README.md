@@ -181,7 +181,9 @@ python src/training.py
 * Time-based cross-validation
 * Reject inference
 * Cost-sensitive optimization
-* Deployment via FastAPI
 * Monitoring & model drift detection
+
+# FastAPI deployment 
+For FastAPI deployment kindly see Readme for credit-default-api
 
 
