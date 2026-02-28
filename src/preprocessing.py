@@ -1,21 +1,60 @@
+import sys
 import pandas as pd
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
+from pathlib import Path
+
+# --- Path Resolution ---
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(BASE_DIR))
+
+
+def load_data(path: str):
+    """
+    Load raw credit default dataset from a CSV file.
+
+    Args:
+        path (str): The file path to the raw dataset.
+
+    Returns:
+        pd.DataFrame: The loaded raw dataset.
+    """
+    df = pd.read_csv(path)
+    return df
+
 
 def clean_df(df: pd.DataFrame):
     """
-    Strip empty space and map default columns
+    Strip empty spaces from column names, map the target variable to binary values,
+    and drop unnecessary identifying columns.
+
+    Args:
+        df (pd.DataFrame): The raw dataframe to be cleaned.
+
+    Returns:
+        pd.DataFrame: The dataframe with standardized columns and mapped targets.
     """
     df = df.copy()
 
     df.columns = df.columns.str.strip()
+
     df['default'] = df['default'].map({'Y': 1, 'N': 0})
 
+    df = df.drop(columns=['ID', 'AGE'])
+    
     return df
+
 
 def clean_categorical_features(df: pd.DataFrame):
     """
-    Clean invalid categorical values.
+    Standardize invalid or ambiguous categorical values in specific features.
+    
+    Groups unknown or miscellaneous values in 'EDUCATION' and 'MARRIAGE' 
+    under a consistent 'Other' label.
+
+    Args:
+        df (pd.DataFrame): The dataframe containing categorical features to clean.
+
+    Returns:
+        pd.DataFrame: The dataframe with cleaned categorical values.
     """
     df = df.copy()
     
@@ -33,66 +72,16 @@ def clean_categorical_features(df: pd.DataFrame):
     
     return df
 
-
-def feature_engineering(df: pd.DataFrame):
-    """
-    Bank-style feature engineering.
-    """
-    df = df.copy()
-
-    # BEHAVIORAL FEATURES
-    pay_cols = [f'PAY_{i}' for i in [0,2,3,4,5,6]]
-    # Payment Behavior features
-    df['max_delinquency'] = df[pay_cols].max(axis=1)
-    df['avg_delinquency'] = df[pay_cols].mean(axis=1)
-    df['num_missed_payments'] = (df[pay_cols] > 0).sum(axis=1)
-    df['recent_delinquency'] = df['PAY_0']
-    # Delinquency Trend
-    df['delinq_trend'] = df['PAY_0'] - df['PAY_6']
-
-    # UTILIZATION & EXPOSURE FEATURES
-    bill_cols = [f'BILL_AMT{i}' for i in range(1,7)]
-    # Credit Utilization Ratio
-    df['avg_bill_amt'] = df[bill_cols].mean(axis=1)
-    df['credit_utilization'] = df['avg_bill_amt'] / df['LIMIT_BAL']
-    # Max Utilization
-    df['max_utilization'] = df[bill_cols].max(axis=1) / df['LIMIT_BAL']
-
-    #STABILITY & VOLATILITY FEATURES
-    # Bill Volatility 
-    df['bill_vol'] = df[bill_cols].std(axis=1) 
-    # Utilization Volatility
-    df['uti_vol'] = df[bill_cols].div(df['LIMIT_BAL'], axis=0).std(axis=1)
-
-    # PAYMENT CAPACITY & LIQUIDITY FEATURES
-    pay_amt_cols = [f'PAY_AMT{i}' for i in range(1,7)]
-    # Payment status Ratio
-    df['avg_payment'] = df[pay_amt_cols].mean(axis=1)
-    df['payment_ratio'] = df['avg_payment'] / (df['avg_bill_amt'] + 1)
-    # Payment Consistency
-    df['payment_std'] = df[pay_amt_cols].std(axis=1)
-
-    # filling missing values df[payment_ratio]
-    imputer = SimpleImputer(strategy='median')
-    df[['payment_ratio']] = imputer.fit_transform(df[['payment_ratio']])
-
-    # Correlation pruning
-    df = df.drop([
-    'BILL_AMT1','BILL_AMT2','BILL_AMT3',
-    'PAY_2','PAY_3','PAY_4','PAY_5','PAY_6'
-    ], axis=1)
-
-    return df
-
-
-def encode_features(df: pd.DataFrame, target: str):
-    """
-    One-hot encode categorical variables.
-    """
-    X = df.drop(columns=[target])
-    y = df[target]
-
-    X = pd.get_dummies(X, drop_first=True)
-    return X, y
-
- 
+if __name__ == "__main__":
+    RAW_DATA_PATH = "data/raw/credit_default.csv"
+    OUTPUT_PATH = "data/processed/credit_default_cleaned.csv"
+    
+    if Path(RAW_DATA_PATH).exists():
+        print(f"Loading data from {RAW_DATA_PATH}...")
+        df = load_data(RAW_DATA_PATH)
+        df_cleaned = clean_df(df)
+        df_cleaned = clean_categorical_features(df_cleaned)
+        df_cleaned.to_csv(OUTPUT_PATH, index=False)
+        print(f"Cleaned data saved to {OUTPUT_PATH}")
+    else:
+        print(f"Error: Raw data file not found at {RAW_DATA_PATH}. Please ensure the file exists.")
