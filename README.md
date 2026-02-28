@@ -186,4 +186,9 @@ python src/training.py
 # FastAPI deployment 
 For FastAPI deployment kindly see Readme for credit-default-api
 
+---
 
+## Author
+
+**Joshua Chukwuma**
+Machine Learning / AI Engineer
